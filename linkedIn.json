@@ -1,0 +1,317 @@
+{
+  "name": "linkedIn",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds",
+              "secondsInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        448
+      ],
+      "id": "5b7fb8b8-a6eb-497a-8a1e-bf5b55325499",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "133QW7Lkz97nCor7wn_UGYFCh0iJDgtZ6z09SRvM_1t0",
+          "mode": "list",
+          "cachedResultName": "LinkedIn Jobs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/133QW7Lkz97nCor7wn_UGYFCh0iJDgtZ6z09SRvM_1t0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/133QW7Lkz97nCor7wn_UGYFCh0iJDgtZ6z09SRvM_1t0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Position": "={{ $json.title }}",
+            "Commpany": "={{ $json.company }}",
+            "Location": "={{ $json.location }}",
+            "URL": "={{ $json.url }}\n"
+          },
+          "matchingColumns": [
+            "URL"
+          ],
+          "schema": [
+            {
+              "id": "Position",
+              "displayName": "Position",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Commpany",
+              "displayName": "Commpany",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1904,
+        448
+      ],
+      "id": "9e49033d-257e-427c-ba5b-1ee06c041b4c",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "oZTdVew9MuvztQLC",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "133QW7Lkz97nCor7wn_UGYFCh0iJDgtZ6z09SRvM_1t0",
+          "mode": "list",
+          "cachedResultName": "LinkedIn Jobs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/133QW7Lkz97nCor7wn_UGYFCh0iJDgtZ6z09SRvM_1t0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/133QW7Lkz97nCor7wn_UGYFCh0iJDgtZ6z09SRvM_1t0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1456,
+        448
+      ],
+      "id": "dfce9e86-2b3a-46ba-af75-91dd1de47202",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "oZTdVew9MuvztQLC",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6afd183f-f642-4b96-984f-2d3f703c5d56",
+              "name": "url",
+              "value": "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords=Lead+Generation&location=United+States",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        656,
+        448
+      ],
+      "id": "8ba8691f-3537-430c-8fc0-5d62365a5ea2",
+      "name": "LinkedIn Url"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate Offsets - change pages and perPage to suit your needs\nconst items = $input.all();\nif (!items || !items.length) return [];\n\nconst baseUrl = items[0].json.url; // coming from Edit Fields\nconst pages = 5;      // <- change this to how many pages you want (5 => 0,10,20,30,40)\nconst perPage = 10;   // <- step (10, 25, etc). Use 10 if you want 0,10,20,...\n\nconst output = [];\nfor (let i = 0; i < pages; i++) {\n  const start = i * perPage;\n  output.push({\n    json: {\n      url: `${baseUrl}&start=${start}`,\n      page: i + 1,\n      start\n    }\n  });\n}\n\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        448
+      ],
+      "id": "318a287d-3071-4941-883f-af50495d5faf",
+      "name": "Paginnation"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1072,
+        448
+      ],
+      "id": "96cd08d7-fef8-4bf7-809d-d34f1dab2913",
+      "name": "Getting Jobs"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst jobDetails = items.map((item) => {\n  const htmlString = item?.json?.data;\n  \n  if (!htmlString) {\n    return [];\n  }\n  \n  const jobs = [];\n  \n\n  const jobBlocks = htmlString.split('<li>').slice(1); \n  \n  jobBlocks.forEach((block) => {\n    const titleMatch = block.match(/<h3[^>]*class=\"[^\"]*base-search-card__title[^\"]*\"[^>]*>\\s*(.*?)\\s*<\\/h3>/s);\n    const title = titleMatch ? titleMatch[1].trim().replace(/<[^>]*>/g, '').trim() : null;\n    const companyMatch = block.match(/<h4[^>]*class=\"[^\"]*base-search-card__subtitle[^\"]*\"[^>]*>.*?<a[^>]*>(.*?)<\\/a>/s);\n    const company = companyMatch ? companyMatch[1].trim().replace(/<[^>]*>/g, '').trim() : null;\n    const locationMatch = block.match(/<span[^>]*class=\"[^\"]*job-search-card__location[^\"]*\"[^>]*>\\s*(.*?)\\s*<\\/span>/s);\n    const location = locationMatch ? locationMatch[1].trim().replace(/<[^>]*>/g, '').trim() : null;\n    const urlMatch = block.match(/<a[^>]*class=\"[^\"]*base-card__full-link[^\"]*\"[^>]*href=\"([^\"]*)\"/);\n    const url = urlMatch ? urlMatch[1].trim() : null;\n    const dateMatch = block.match(/<time[^>]*datetime=\"[^\"]*\"[^>]*>\\s*(.*?)\\s*<\\/time>/s);\n    let postedDate = dateMatch ? dateMatch[1].trim().replace(/<[^>]*>/g, '').trim() : null;\n    if (postedDate) {\n      postedDate = postedDate.replace(/\\s+/g, ' ').trim();\n    }\n    \n\n    const dateAttrMatch = block.match(/<time[^>]*datetime=\"([^\"]*)\"/);\n    const dateAttribute = dateAttrMatch ? dateAttrMatch[1].trim() : null;\n\n    const benefitsMatch = block.match(/<span[^>]*class=\"[^\"]*job-posting-benefits__text[^\"]*\"[^>]*>\\s*(.*?)\\s*<\\/span>/s);\n    let benefits = benefitsMatch ? benefitsMatch[1].trim().replace(/<[^>]*>/g, '').trim() : null;\n    if (benefits) {\n      benefits = benefits.replace(/\\s+/g, ' ').trim();\n    }\n    if (title) {\n      jobs.push({\n        title,\n        company,\n        location,\n        url,\n        postedDate,\n        dateAttribute,\n        benefits\n      });\n    }\n  });\n  \n  return jobs;\n}).flat();\n\nreturn jobDetails.map(job => ({\n  json: job\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        448
+      ],
+      "id": "86a4c7b9-c2ed-4697-9223-f64c9a6f5a00",
+      "name": "Job,Comapny,Location"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get data from the Job extraction node\nconst jobData = $('Job,Comapny,Location').all();\nconsole.log('Job Data Count:', jobData.length);\nconsole.log('First Job Sample:', JSON.stringify(jobData[0]?.json, null, 2));\n\n// Get sheet data from current input (Get row(s) in sheet)\nconst sheetData = $input.all();\nconsole.log('Sheet Data Count:', sheetData.length);\nconsole.log('First Sheet Row Sample:', JSON.stringify(sheetData[0]?.json, null, 2));\n\n// Extract all job items with their details\nconst newJobs = jobData.map(item => item.json);\nconsole.log('New Jobs Count:', newJobs.length);\nconsole.log('First New Job URL:', newJobs[0]?.url);\n\n// Initialize empty set for existing URLs\nlet existingUrls = new Set();\n\n// Check if sheet has any data\nif (sheetData && sheetData.length > 0) {\n  // Build set of existing URLs from sheet\n  const urls = sheetData\n    .map(item => item.json?.URL || item.json?.url || \"\")\n    .filter(Boolean);\n  \n  console.log('URLs from sheet:', urls);\n  \n  existingUrls = new Set(\n    urls.map(url => String(url).trim().toLowerCase())\n  );\n}\n\nconsole.log('Existing URLs Set Size:', existingUrls.size);\n\n// Filter: keep only jobs whose URL is not already in the sheet\nconst uniqueJobs = newJobs.filter(job => {\n  if (!job || !job.url) {\n    console.log('Job rejected - no url:', job);\n    return false;\n  }\n  const normalizedUrl = String(job.url).trim().toLowerCase();\n  const exists = existingUrls.has(normalizedUrl);\n  if (exists) {\n    console.log('Job rejected - duplicate URL:', normalizedUrl);\n  }\n  return !exists;\n});\n\nconsole.log('Unique Jobs Count:', uniqueJobs.length);\n\n// Return only unique jobs with all their details\nreturn uniqueJobs.map(job => ({ json: job }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        448
+      ],
+      "id": "a5bbd0a4-b700-49fc-8d6e-77396f7dd268",
+      "name": "Duplicate",
+      "alwaysOutputData": true,
+      "executeOnce": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "LinkedIn Url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn Url": {
+      "main": [
+        [
+          {
+            "node": "Paginnation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Paginnation": {
+      "main": [
+        [
+          {
+            "node": "Getting Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Getting Jobs": {
+      "main": [
+        [
+          {
+            "node": "Job,Comapny,Location",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Job,Comapny,Location": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplicate": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b93fdd2b-3c29-4e5c-8616-150fe3102c14",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9b76dc501c8d15526b21d09c3d195bb435114142a750d86cd20c0103fe7a9b1c"
+  },
+  "id": "stILy06JHOmSjdss",
+  "tags": []
+}
